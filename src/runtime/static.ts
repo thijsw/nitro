@@ -59,11 +59,12 @@ export default eventHandler(async (event) => {
     event.res.setHeader('Last-Modified', asset.mtime)
   }
 
-  // TODO: Asset dir cache control
-  // if (isBuildAsset) {
-  // const TWO_DAYS = 2 * 60 * 60 * 24
-  // event.res.setHeader('Cache-Control', `max-age=${TWO_DAYS}, immutable`)
-  // }
+  const isBuildAsset = id.startsWith(buildAssetsDir())
+
+  if (isBuildAsset) {
+    const ONE_YEAR = 365 * 60 * 60 * 24
+    event.res.setHeader('Cache-Control', `max-age=${ONE_YEAR}, immutable`)
+  }
 
   const contents = await readAsset(id)
   event.res.end(contents)
